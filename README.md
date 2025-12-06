@@ -17,4 +17,4 @@ Every package contains unit test(s) for the example(s) from the puzzle descripti
 |  3  | Lobby                           | [Solution](day3/src/main.rs)  |
 |  4  | Printing Department             | [Solution](day4/src/main.rs)  |
 |  5  | Cafeteria                       | [Solution](day5/src/main.rs)  |
-|  6  | Trash Compactor                 | TODO                          |
+|  6  | Trash Compactor                 | [Solution](day6/src/main.rs)  |
