@@ -1,6 +1,6 @@
 # 🎄 Advent of Code 2025 🎄
 
-TODO: Add Github action and badge for test status
+[![Rust Tests Badge](https://github.com/chrismandery/advent-of-code-2025/actions/workflows/rust.yml/badge.svg)](https://github.com/chrismandery/advent-of-code-2025/actions/workflows/rust.yml)
 
 This repository contains my solutions for the Advent of Code 2025, written in Rust.
 
