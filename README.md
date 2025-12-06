@@ -1,2 +1,20 @@
-# advent-of-code-2025
-Advent of Code 2025
+# 🎄 Advent of Code 2025 🎄
+
+TODO: Add Github action and badge for test status
+
+This repository contains my solutions for the Advent of Code 2025, written in Rust.
+
+All solutions are in the same Cargo Workspace, where the solution for puzzle X can be found in the dayX package.
+
+Every package contains unit test(s) for the example(s) from the puzzle description and will build an executable that solves the puzzle for the input file from the inputs/ directory.
+
+# Links to Solutions
+
+| Day |             Puzzle              |            Source             |
+|:---:|:-------------------------------:|:-----------------------------:|
+|  1  | Secret Entrance                 | [Solution](day1/src/main.rs)  |
+|  2  | Gift Shop                       | [Solution](day2/src/main.rs)  |
+|  3  | Lobby                           | [Solution](day3/src/main.rs)  |
+|  4  | Printing Department             | [Solution](day4/src/main.rs)  |
+|  5  | Cafeteria                       | TODO                          |
+|  6  | Trash Compactor                 | TODO                          |
