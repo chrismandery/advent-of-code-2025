@@ -19,4 +19,5 @@ Every package contains unit test(s) for the example(s) from the puzzle descripti
 |  5  | Cafeteria                       | [Solution](day5/src/main.rs)  |
 |  6  | Trash Compactor                 | [Solution](day6/src/main.rs)  |
 |  7  | Laboratories                    | [Solution](day7/src/main.rs)  |
-|  8  | Playground                      | [Solution](day7/src/main.rs)  |
+|  8  | Playground                      | [Solution](day8/src/main.rs)  |
+|  9  | Movie Theater                   | [Solution](day9/src/main.rs)  |
