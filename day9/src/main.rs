@@ -1,21 +1,44 @@
 use itertools::Itertools;
 use std::cmp::{max, min};
-use std::collections::HashSet;
 use std::fs::read_to_string;
 use std::path::Path;
 
-#[derive(Eq, Hash, PartialEq)]
-struct Pos{
+#[derive(Debug, Eq, Hash, PartialEq)]
+struct Pos {
     x: u64,
     y: u64
 }
 
+#[derive(Debug, Eq, PartialEq)]
+enum LineType {
+    HORIZONTAL,
+    VERTICAL
+}
+
+#[derive(Debug)]
+struct Line {
+    lt: LineType,
+    coord_static: u64,
+    coord_min: u64,
+    coord_max: u64
+}
+
 impl Pos {
-    fn line_pos(self: &Self, other: &Pos) -> Vec<Pos> {
+    fn line_between(self: &Self, other: &Pos) -> Line {
         if self.x == other.x {
-            ((min(self.y, other.y)..=max(self.y, other.y))).map(|y| Pos { x: self.x, y } ).collect()
+            Line {
+                lt: LineType::VERTICAL,
+                coord_static: self.x,
+                coord_min: min(self.y, other.y),
+                coord_max: max(self.y, other.y)
+            }
         } else if self.y == other.y {
-            ((min(self.x, other.x)..=max(self.x, other.x))).map(|x| Pos { x, y: self.y } ).collect()
+            Line {
+                lt: LineType::HORIZONTAL,
+                coord_static: self.y,
+                coord_min: min(self.x, other.x),
+                coord_max: max(self.x, other.x)
+            }
         } else {
             panic!("Not supported, positions for line_pos must have same X or Y coordinate!")
         }
@@ -27,14 +50,46 @@ impl Pos {
         width * height
     }
 
-    fn rectangle_inner_points(self: &Self, other: &Pos) -> HashSet<Pos> {
-        let mut res = HashSet::new();
-        for x in (min(self.x, other.x) + 1)..=(max(self.x, other.x) - 1) {
-            for y in (min(self.y, other.y) + 1)..=(max(self.y, other.y) - 1) {
-                res.insert(Pos { x, y});
-            }
+    fn rectangle_inner_lines(self: &Self, other: &Pos) -> Vec<Line> {
+        // Returns the four lines describing a rectangle that is inside given the ones described by the points.
+        let mut top_left = Pos { x: min(self.x, other.x), y: min(self.y, other.y) };
+        let mut top_right = Pos { x: max(self.x, other.x), y: min(self.y, other.y) };
+        let mut bottom_left = Pos { x: min(self.x, other.x), y: max(self.y, other.y) };
+        let mut bottom_right = Pos { x: max(self.x, other.x), y: max(self.y, other.y) };
+
+        let mut res = Vec::new();
+
+        if (bottom_right.x - top_left.x) > 1 && (bottom_right.y - top_left.y) > 1 {
+            // Shrink by one
+            top_left.x += 1; top_left.y += 1;
+            top_right.x -= 1; top_right.y += 1;
+            bottom_left.x += 1; bottom_left.y -= 1;
+            bottom_right.x -= 1; bottom_right.y -= 1;
+
+            res.push(top_left.line_between(&top_right));
+            res.push(top_right.line_between(&bottom_right));
+            res.push(bottom_right.line_between(&bottom_left));
+            res.push(bottom_left.line_between(&top_left));
         }
+
         res
+    }
+}
+
+impl Line {
+    fn intersects(self: &Self, other: &Line) -> bool {
+        if self.lt == other.lt {
+            return false;
+        } else {
+            let (vertical, horizontal) = match self.lt {
+                LineType::VERTICAL => (self, other),
+                LineType::HORIZONTAL => (other, self),
+            };
+
+            let x_overlaps = vertical.coord_static >= horizontal.coord_min && vertical.coord_static <= horizontal.coord_max;
+            let y_overlaps = horizontal.coord_static >= vertical.coord_min && horizontal.coord_static <= vertical.coord_max;
+            x_overlaps && y_overlaps
+        }
     }
 }
 
@@ -48,30 +103,22 @@ fn calc_largest_rectangle_star1(tiles: &[Pos]) -> u64 {
 }
 
 fn calc_largest_rectangle_star2(tiles: &[Pos]) -> u64 {
-    // The idea here is that we are building a set of all the points that lie between red tiles (= green tiles on the border) and then
-    // check whether the interior for any potential rectangle contains any of these points.
-    let mut border_tiles = HashSet::new();
+    // The idea here is that we are building a list of all the lines that lie between red tiles (= green tiles on the border) and then
+    // check whether the interior for any potential rectangle intersects any of these.
+    let mut border_lines = Vec::new();
     for idx in 0..tiles.len() {
         let pos_a = &tiles[idx];
         let pos_b = if idx < (tiles.len() - 1) { &tiles[idx+1] } else { &tiles[0] };
-        for pos in pos_a.line_pos(&pos_b) {
-            border_tiles.insert(pos);
-        }
+        border_lines.push(pos_a.line_between(&pos_b));
     }
-
-    dbg!(&border_tiles.len());
 
     tiles
         .iter()
         .combinations(2)
-        .enumerate()
-        .filter_map(|(i, v)| {
-            println!("Testing {}...", i);
+        .filter_map(|v| {
+            let inner_lines = v[0].rectangle_inner_lines(&v[1]);
 
-            let inner_points = v[0].rectangle_inner_points(&v[1]);
-            dbg!(&inner_points.len());
-
-            if inner_points.is_disjoint(&border_tiles) {
+            if inner_lines.iter().all(|l| !border_lines.iter().any(|bl| bl.intersects(&l))) {
                 Some(v[0].rectangle_area(v[1]))
             } else {
                 None
