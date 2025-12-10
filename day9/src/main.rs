@@ -51,7 +51,7 @@ impl Pos {
     }
 
     fn rectangle_inner_lines(self: &Self, other: &Pos) -> Vec<Line> {
-        // Returns the four lines describing a rectangle that is inside given the ones described by the points.
+        // Returns the four lines describing a rectangle that is inside given the one described by the points.
         let mut top_left = Pos { x: min(self.x, other.x), y: min(self.y, other.y) };
         let mut top_right = Pos { x: max(self.x, other.x), y: min(self.y, other.y) };
         let mut bottom_left = Pos { x: min(self.x, other.x), y: max(self.y, other.y) };
