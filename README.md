@@ -22,3 +22,4 @@ Every package contains unit test(s) for the example(s) from the puzzle descripti
 |  8  | Playground                      | [Solution](day8/src/main.rs)  |
 |  9  | Movie Theater                   | [Solution](day9/src/main.rs)  |
 | 10  | Factory                         | [Solution](day10/src/main.rs) |
+| 11  | Reactor                         | [Solution](day11/src/main.rs) |
