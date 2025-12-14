@@ -23,3 +23,4 @@ Every package contains unit test(s) for the example(s) from the puzzle descripti
 |  9  | Movie Theater                   | [Solution](day9/src/main.rs)  |
 | 10  | Factory                         | [Solution](day10/src/main.rs) |
 | 11  | Reactor                         | [Solution](day11/src/main.rs) |
+| 12  | Christmas Tree Farm             | [Solution](day12/src/main.rs) |
